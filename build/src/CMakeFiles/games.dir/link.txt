@@ -1,0 +1,2 @@
+/usr/bin/ar qc libgames.a CMakeFiles/games.dir/main.cpp.o CMakeFiles/games.dir/tic_tac_toe.cpp.o
+/usr/bin/ranlib libgames.a
