@@ -1,1 +1,0 @@
-/usr/bin/c++ -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/tic_tac_toe.dir/src/main.cpp.o -o tic_tac_toe  src/libgames.a
