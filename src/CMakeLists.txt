@@ -1,5 +1,5 @@
-file(GLOB games_source_files
-    "*.cpp"
-    "*.h")
+add_executable(ttt_test main.cpp)
 
-add_library(games ${games_source_files})
+add_subdirectory(games)
+
+target_link_libraries(ttt_test PRIVATE tic_tac_toe)

@@ -1,8 +1,8 @@
 #ifndef TIC_TAC_TOE_H
 #define TIC_TAC_TOE_H
 
-#include "../include/game.h"
-#include "tic_tac_toe_state.h"
+#include <game.h>
+#include <games/tic_tac_toe/tic_tac_toe_state.h>
 #include <vector>
 
 

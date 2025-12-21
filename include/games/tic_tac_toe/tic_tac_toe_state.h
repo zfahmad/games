@@ -1,7 +1,7 @@
 #ifndef TIC_TAC_TOE_STATE_H
 #define TIC_TAC_TOE_STATE_H
 
-#include "../include/state.h"
+#include <state.h>
 #include <array>
 #include <cstdint>
 
