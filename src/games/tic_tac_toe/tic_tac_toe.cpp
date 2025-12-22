@@ -1,7 +1,7 @@
-#include <games/tic_tac_toe/tic_tac_toe.h>
-#include <games/tic_tac_toe/tic_tac_toe_state.h>
 #include <cassert>
 #include <cstdint>
+#include <games/tic_tac_toe/tic_tac_toe.hpp>
+#include <games/tic_tac_toe/tic_tac_toe_state.hpp>
 #include <iostream>
 
 TicTacToe::TicTacToe() = default;

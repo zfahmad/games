@@ -1,13 +1,12 @@
-#ifndef TIC_TAC_TOE_H
-#define TIC_TAC_TOE_H
+#ifndef TIC_TAC_TOE_HPP
+#define TIC_TAC_TOE_HPP
 
-#include <game.h>
-#include <games/tic_tac_toe/tic_tac_toe_state.h>
+#include <game.hpp>
+#include <games/tic_tac_toe/tic_tac_toe_state.hpp>
 #include <vector>
 
-
 class TicTacToe {
-  public:
+public:
     using ActionType = int;
     using StateType = TicTacToeState;
     TicTacToe();

@@ -1,5 +1,5 @@
-#include <games/tic_tac_toe/tic_tac_toe_state.h>
-#include <constants.h>
+#include <constants.hpp>
+#include <games/tic_tac_toe/tic_tac_toe_state.hpp>
 #include <iostream>
 
 TicTacToeState::TicTacToeState() = default;

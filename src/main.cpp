@@ -1,5 +1,5 @@
-#include <games/tic_tac_toe/tic_tac_toe_state.h>
-#include <games/tic_tac_toe/tic_tac_toe.h>
+#include <games/tic_tac_toe/tic_tac_toe_state.hpp>
+#include <games/tic_tac_toe/tic_tac_toe.hpp>
 #include <iostream>
 #include <cstdint>
 
