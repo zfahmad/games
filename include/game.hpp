@@ -3,9 +3,12 @@
 
 #include <vector>
 
-template <typename G, typename StateType, typename ActionType>
-concept Game = requires(G g, StateType state, ActionType action, int player) {
-    { g.get_actions(state) } -> std::same_as<std::vector<ActionType>>;
+template <typename G>
+concept Game = requires(G g, G::StateType state, G::ActionType action,
+                        G::StateType::Player player) {
+    {
+        g.get_actions(state)
+    } -> std::same_as<std::vector<typename G::ActionType>>;
     { g.apply_action(state, action) } -> std::same_as<int>;
     { g.undo_action(state, action) } -> std::same_as<int>;
     { g.reset(state) } -> std::same_as<void>;

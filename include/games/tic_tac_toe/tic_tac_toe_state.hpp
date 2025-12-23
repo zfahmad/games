@@ -1,14 +1,15 @@
 #ifndef TIC_TAC_TOE_STATE_HPP
 #define TIC_TAC_TOE_STATE_HPP
 
-#include <state.hpp>
-#include <array>
+#include "player.hpp"
 #include <cstdint>
+#include <state.hpp>
 
 class TicTacToeState {
 public:
-    using BoardType = std::array<std::uint16_t, 2>;
     enum class Player { One, Two };
+    using BoardType = PlayerIndexed<std::uint16_t, Player>;
+
     void print_board();
     TicTacToeState();
     const BoardType &get_board() const { return {board_}; }
@@ -19,10 +20,10 @@ public:
     void set_player(Player player) { player_ = player; }
 
 protected:
-    BoardType board_ = {0, 0};
+    BoardType board_ = BoardType();
     Player player_ = Player::One;
 };
 
-static_assert(State<TicTacToeState, std::array<std::uint16_t, 2>>);
+static_assert(State<TicTacToeState>);
 
 #endif

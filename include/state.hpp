@@ -2,17 +2,19 @@
 #define STATE_HPP
 
 #include <concepts>
+#include <player.hpp>
 #include <string>
 
-template <typename S, typename BoardType>
+template <typename S>
 concept State =
-    requires(S s, BoardType board, const std::string &state_str, S::Player player) {
+    requires(S s, typename S::BoardType board, const std::string &state_str,
+             typename S::Player player) {
         // State member access functions
         // print_board illustrates the board as we would see it when playing.
         // Get board should return an array of bitboards consisting of a
         // bitboard for each player.
         { s.print_board() } -> std::same_as<void>;
-        { s.get_board() } -> std::same_as<const BoardType &>;
+        { s.get_board() } -> std::same_as<const typename S::BoardType &>;
         { s.set_board(board) } -> std::same_as<void>;
         { s.get_player() } -> std::same_as<typename S::Player>;
         { s.set_player(player) } -> std::same_as<void>;
