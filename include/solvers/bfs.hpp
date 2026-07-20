@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <unordered_map>
+#include <queue>
 
 // template <typename BBType> struct Node {
 //     std::array<BBType, 2> board_;
