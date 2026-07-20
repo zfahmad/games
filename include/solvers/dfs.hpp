@@ -6,6 +6,7 @@
 #include <fstream>
 #include <game.hpp>
 #include <iostream>
+#include <unordered_map>
 
 // template <typename BBType> struct Node {
 //     std::array<BBType, 2> board_;
