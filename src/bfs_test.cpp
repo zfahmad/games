@@ -3,6 +3,7 @@
 #include <games/connect_four/connect_four.hpp>
 #include <games/tic_tac_toe/tic_tac_toe.hpp>
 #include <iostream>
+#include <bit>
 #include <solvers/bfs.hpp>
 
 std::uint64_t bit_to_compact(std::uint64_t bitboard, int dim) {
