@@ -34,16 +34,16 @@ void ConnectFourState::print_board() {
         for (int col = 0; col < this->num_cols_; col++) {
             if (board_[Player::One] & bit)
                 // std::cout << GREEN << "x " << RESET;
-                // std::cout << GREEN << CROSS << " " << RESET;
-                std::cout << BLUE << FILL_CIRCLE << " " << RESET;
+                std::cout << GREEN << CROSS << " " << RESET;
+                // std::cout << BLUE << FILL_CIRCLE << " " << RESET;
             else if (board_[Player::Two] & bit)
                 // std::cout << RED << "o " << RESET;
-                // std::cout << RED << NAUGHT << " " << RESET;
-                std::cout << RED << FILL_CIRCLE << " " << RESET;
+                std::cout << RED << NAUGHT << " " << RESET;
+                // std::cout << RED << FILL_CIRCLE << " " << RESET;
             else
                 // std::cout << GRAY << ". " << RESET;
-                // std::cout << GRAY << DOT << " " << RESET;
-                std::cout << CIRCLE << " ";
+                std::cout << GRAY << DOT << " " << RESET;
+                // std::cout << CIRCLE << " ";
             bit = (bit << 1);
         }
         std::cout << "\n";
@@ -167,17 +167,14 @@ std::array<ConnectFourState::BBType, 2> ConnectFourState::canonical_form() {
     std::vector<std::array<BBType, 2>> symmetries;
     BoardType board = get_board();
     BoardType transformed_board;
-    symmetries.push_back({board[Player::One], board[Player::Two]});
 
     transformed_board = reflect_vertical(board);
-    symmetries.push_back(
-        {transformed_board[Player::One], transformed_board[Player::Two]});
-
-    std::array<BBType, 2> canonical =
-        *std::min_element(symmetries.begin(), symmetries.end());
-    for (auto sym : symmetries) {
-        std::cout << "{" << sym[0] << ", " << sym[1] << "}, ";
-    }
+    std::array<BBType, 2> canonical;
+    if (board[Player::One] < transformed_board[Player::One])
+        canonical = {board[Player::One], board[Player::Two]};
+    else
+        canonical = {transformed_board[Player::One],
+                     transformed_board[Player::Two]};
 
     return canonical;
 }

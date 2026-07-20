@@ -34,6 +34,7 @@ public:
     std::vector<std::vector<int>> piece_locations;
 
     std::array<std::uint64_t, 2> canonical_form();
+    void from_canonical_form(std::array<BBType, 2> canonical_state);
     BoardType reflect_vertical(BoardType board);
     BoardType flip_board(BoardType board);
     // void flip_state();

@@ -52,7 +52,8 @@ int TicTacToe::undo_action(StateType &state, ActionType action) {
     BBType move = 1L << action;
     TicTacToe::StateType::BoardType board = state.get_board();
 
-    board[state.get_player()] ^= move;
+    board[state.get_opponent()] ^= move;
+    state.set_board(board);
     return 0;
 }
 
@@ -60,6 +61,17 @@ TicTacToe::StateType TicTacToe::get_next_state(const StateType &state,
                                                ActionType action) {
     TicTacToe::StateType next_state = state;
     apply_action(next_state, action);
+    if (state.get_player() == Player::One)
+        next_state.set_player(Player::Two);
+    else
+        next_state.set_player(Player::One);
+    return next_state;
+}
+
+TicTacToe::StateType TicTacToe::get_previous_state(const StateType &state,
+                                                   ActionType action) {
+    TicTacToe::StateType next_state = state;
+    undo_action(next_state, action);
     if (state.get_player() == Player::One)
         next_state.set_player(Player::Two);
     else
@@ -120,6 +132,6 @@ std::vector<std::uint8_t> TicTacToe::legal_moves_mask(const StateType &state) {
 }
 
 std::vector<float> TicTacToe::decode_policy(const StateType &state,
-                                        std::vector<float> policy) {
+                                            std::vector<float> policy) {
     return policy;
 }

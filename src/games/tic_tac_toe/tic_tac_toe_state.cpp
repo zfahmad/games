@@ -1,9 +1,10 @@
+#include <algorithm>
 #include <cassert>
 #include <constants.hpp>
 #include <games/tic_tac_toe/tic_tac_toe_state.hpp>
 #include <iostream>
 #include <stdexcept>
-#include <algorithm>
+#include <bit>
 
 using BBType = TicTacToeState::BBType;
 using BoardType = TicTacToeState::BoardType;
@@ -123,7 +124,7 @@ BoardType TicTacToeState::rot_180(BoardType board) {
     players.push_back(Player::One);
     players.push_back(Player::Two);
 
-    for (Player player : players){
+    for (Player player : players) {
         BBType left = 1;
         BBType right = 1 << 8;
 
@@ -135,7 +136,7 @@ BoardType TicTacToeState::rot_180(BoardType board) {
             right >>= 1;
         }
     }
-    
+
     return new_board;
 }
 
@@ -218,7 +219,7 @@ BoardType TicTacToeState::reflect_diagonal_neg(BoardType board) {
 
 BoardType TicTacToeState::rot_90(BoardType board) {
     // Reflection along the negative gradient plus a vertical reflection.
-    
+
     BoardType new_board = reflect_diagonal_pos(board);
     new_board = reflect_horizontal(new_board);
     return new_board;
@@ -226,7 +227,7 @@ BoardType TicTacToeState::rot_90(BoardType board) {
 
 BoardType TicTacToeState::rot_270(BoardType board) {
     // Reflection along the positive gradient plus a vertical reflection.
-    
+
     BoardType new_board = reflect_diagonal_neg(board);
     new_board = reflect_horizontal(new_board);
     return new_board;
@@ -239,20 +240,34 @@ std::array<BBType, 2> TicTacToeState::canonical_form() {
     symmetries.push_back({board[Player::One], board[Player::Two]});
 
     transformed_board = rot_90(board);
-    symmetries.push_back({transformed_board[Player::One], transformed_board[Player::Two]});
+    symmetries.push_back(
+        {transformed_board[Player::One], transformed_board[Player::Two]});
     transformed_board = rot_180(board);
-    symmetries.push_back({transformed_board[Player::One], transformed_board[Player::Two]});
+    symmetries.push_back(
+        {transformed_board[Player::One], transformed_board[Player::Two]});
     transformed_board = rot_270(board);
-    symmetries.push_back({transformed_board[Player::One], transformed_board[Player::Two]});
+    symmetries.push_back(
+        {transformed_board[Player::One], transformed_board[Player::Two]});
     transformed_board = reflect_horizontal(board);
-    symmetries.push_back({transformed_board[Player::One], transformed_board[Player::Two]});
+    symmetries.push_back(
+        {transformed_board[Player::One], transformed_board[Player::Two]});
     transformed_board = reflect_vertical(board);
-    symmetries.push_back({transformed_board[Player::One], transformed_board[Player::Two]});
+    symmetries.push_back(
+        {transformed_board[Player::One], transformed_board[Player::Two]});
     transformed_board = reflect_diagonal_pos(board);
-    symmetries.push_back({transformed_board[Player::One], transformed_board[Player::Two]});
+    symmetries.push_back(
+        {transformed_board[Player::One], transformed_board[Player::Two]});
     transformed_board = reflect_diagonal_neg(board);
-    symmetries.push_back({transformed_board[Player::One], transformed_board[Player::Two]});
+    symmetries.push_back(
+        {transformed_board[Player::One], transformed_board[Player::Two]});
 
-    std::array<BBType, 2> canonical = *std::min_element(symmetries.begin(), symmetries.end());
+    std::array<BBType, 2> canonical =
+        *std::min_element(symmetries.begin(), symmetries.end());
     return canonical;
+}
+
+void TicTacToeState::from_canonical_form(std::array<BBType, 2> canonical) {
+    set_board(BoardType(canonical));
+    BBType joint = canonical[0] | canonical[1];
+    set_player((std::popcount(joint) % 2)? Player::Two : Player::One);
 }

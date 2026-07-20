@@ -1,10 +1,10 @@
+#include <algorithm>
 #include <cassert>
+#include <cmath>
 #include <constants.hpp>
 #include <games/chinese_checkers/chinese_checkers.hpp>
 #include <games/chinese_checkers/chinese_checkers_state.hpp>
 #include <iostream>
-#include <cmath>
-#include <algorithm>
 
 // TODO: Currently ChineseCheckers does not check for validity of states. It is
 // not needed for AlphaZero since AlphaZero cannot traverse to illegal states.
@@ -107,7 +107,9 @@ void ChineseCheckers::reset(StateType &state) {
 
     // Lookup initial setup for player one.
     // bb_1 = SETUPS[state.get_num_pieces() - 1];
-    bb_1 = generate_initial_configuration(state.get_num_pieces());
+    // bb_1 = generate_initial_configuration(state.get_num_pieces());
+    bb_1 = ~this->destinations_mask &
+           generate_initial_configuration(state.get_num_pieces());
 
     // Mirror bits for player two.
     for (int i = 0; i < state.get_num_rows(); i++) {
@@ -121,6 +123,7 @@ void ChineseCheckers::reset(StateType &state) {
         bit = bit << (8 - state.get_num_cols());
         back_bit = back_bit >> (8 - state.get_num_cols());
     }
+    bb_2 = ~this->destinations_mask & bb_2;
     state.piece_locations =
         get_initial_piece_locs(state.get_num_rows(), state.get_num_pieces());
 
@@ -299,13 +302,14 @@ int ChineseCheckers::apply_action(StateType &state, ActionType action) {
     int offset = action % (num_rows_ * num_rows_);
     int start = index_to_location(base, num_rows_);
     int end = index_to_location(offset, num_rows_);
+    // std::cout << start << "->" << end << std::endl;
 
     BBType source, destination;
     source = 1ULL << start;
     destination = 1ULL << end;
 
     ChineseCheckersState::BoardType board = state.get_board();
-    board[state.get_player()] ^= source;
+    board[state.get_player()] &= ~source;
     board[state.get_player()] |= destination;
 
     state.set_board(board);
@@ -313,12 +317,25 @@ int ChineseCheckers::apply_action(StateType &state, ActionType action) {
     return 0;
 }
 
-// int ChineseCheckers::undo_action(StateType &state, ActionType action) {
-//     // WARN: Undo is not implemented yet -- not necessary for AlphaZero
-//     but may
-//     // be for solving
-//     return 0;
-// }
+int ChineseCheckers::undo_action(StateType &state, ActionType action) {
+    int base = action / (num_rows_ * num_rows_);
+    int offset = action % (num_rows_ * num_rows_);
+    int end = index_to_location(base, num_rows_);
+    int start = index_to_location(offset, num_rows_);
+    // std::cout << start << "->" << end << std::endl;
+
+    BBType source, destination;
+    source = 1ULL << start;
+    destination = 1ULL << end;
+
+    ChineseCheckersState::BoardType board = state.get_board();
+    board[state.get_opponent()] &= ~source;
+    board[state.get_opponent()] |= destination;
+
+    state.set_board(board);
+
+    return 0;
+}
 
 ChineseCheckers::StateType
 ChineseCheckers::get_next_state(const StateType &state, ActionType action) {
@@ -331,7 +348,18 @@ ChineseCheckers::get_next_state(const StateType &state, ActionType action) {
     return next_state;
 }
 
-bool ChineseCheckers::is_winner(const StateType &state, Player player) {
+ChineseCheckers::StateType
+ChineseCheckers::get_previous_state(const StateType &state, ActionType action) {
+    StateType previous_state = state;
+    undo_action(previous_state, action);
+    if (state.get_player() == Player::One)
+        previous_state.set_player(Player::Two);
+    else
+        previous_state.set_player(Player::One);
+    return previous_state;
+}
+
+bool ChineseCheckers::is_winner(const StateType &state, Player player) const {
     // Checks if the state is a win for the player passed as an argument
 
     Player opponent = ((player == Player::One) ? Player::Two : Player::One);
@@ -343,7 +371,7 @@ bool ChineseCheckers::is_winner(const StateType &state, Player player) {
         // Is goal filled and at least one piece belongs to player?
         // std::cout << joint_board << " " << initial_board[opponent] <<
         // std::endl;
-        if ((joint_board & initial_board[opponent]) == initial_board[opponent])
+        if (joint_board == initial_board[opponent])
             return true;
         else
             return false;
@@ -367,6 +395,13 @@ bool ChineseCheckers::is_terminal(const StateType &state) {
         return false;
 }
 
+bool ChineseCheckers::is_legal(const StateType &state) {
+    // State where both players simultaneously are winning are illegal
+    if (is_winner(state, Player::One) && is_winner(state, Player::Two))
+        return true;
+    return true;
+}
+
 ChineseCheckers::Outcomes ChineseCheckers::get_outcome(const StateType &state) {
     if (is_winner(state, Player::One))
         return Outcomes::P1Win;
@@ -388,9 +423,8 @@ ChineseCheckers::legal_moves_mask(const StateType &state) {
     return mask;
 }
 
-std::vector<float>
-ChineseCheckers::decode_policy(const StateType &state,
-                               std::vector<float> policy) {
+std::vector<float> ChineseCheckers::decode_policy(const StateType &state,
+                                                  std::vector<float> policy) {
     if (state.get_player() == Player::Two) {
         std::reverse(policy.begin(), policy.end());
         return policy;

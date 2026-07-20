@@ -19,23 +19,28 @@ int main(int argc, char **argv) {
     // state.print_board();
     //
     // state.from_string("0000000010210000 0000000000000000 044");
-    state.from_string("00000000005095800000000000a72020044");
+    // state.from_string("00000000005095800000000000a72020044");
     // state.from_string("0000000350200200000000048b008000055");
     state.print_board();
-    // ConnectFour game = ConnectFour();
+    ConnectFour game = ConnectFour();
+    game.reset(state);
     // std::cout << game.is_draw(state) << std::endl;
-    ConnectFourState::BoardType reflected_board = ConnectFourState::BoardType(state.reflect_vertical(state.get_board()));
-    state.set_board(reflected_board);
-    state.print_board();
-    state.canonical_form();
-    auto compact = state.to_compact();
-    std::cout << compact[0] << " " << compact[1] << std::endl;
-    // std::vector<int> actions = game.get_actions(state);
-    // for (int action : actions)
-    //     std::cout << action << " ";
-    // std::cout << std::endl;
-    // game.apply_action(state, 1);
+    // ConnectFourState::BoardType reflected_board = ConnectFourState::BoardType(state.reflect_vertical(state.get_board()));
+    // state.set_board(reflected_board);
     // state.print_board();
+    // state.canonical_form();
+    // auto compact = state.to_compact();
+    // std::cout << compact[0] << " " << compact[1] << std::endl;
+
+    std::vector<int> actions = game.get_actions(state);
+    for (int action : actions)
+        std::cout << action << " ";
+    std::cout << std::endl;
+    game.apply_action(state, 1);
+    state.print_board();
+    actions = game.get_actions(state);
+    game.apply_action(state, 1);
+    state.print_board();
     // game.undo_action(state, 1);
     // state.print_board();
     // state.set_board(ConnectFourState::BoardType({0, 0}));

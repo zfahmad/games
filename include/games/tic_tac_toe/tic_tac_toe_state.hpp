@@ -26,6 +26,7 @@ public:
     void set_player(Player player) { player_ = player; }
 
     std::array<BBType, 2> canonical_form();
+    void from_canonical_form(std::array<BBType, 2> canonical);
     BoardType reflect_horizontal(BoardType board);
     BoardType reflect_vertical(BoardType board);
     BoardType reflect_diagonal_pos(BoardType board);

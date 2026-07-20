@@ -3,12 +3,12 @@
 
 #include <game.hpp>
 #include <games/tic_tac_toe/tic_tac_toe_state.hpp>
-#include <vector>
 #include <string>
+#include <vector>
 
 class TicTacToe {
 public:
-    enum class Outcomes { NonTerminal, P1Win, P2Win, Draw };
+    enum class Outcomes : std::int8_t { NonTerminal, P1Win, P2Win, Draw };
     using ActionType = int;
     using StateType = TicTacToeState;
 
@@ -19,12 +19,14 @@ public:
     int apply_action(StateType &state, ActionType action);
     int undo_action(StateType &state, ActionType action);
     StateType get_next_state(const StateType &state, ActionType action);
+    StateType get_previous_state(const StateType &state, ActionType action);
     bool is_winner(const StateType &state, StateType::Player player);
     bool is_draw(const StateType &state);
     bool is_terminal(const StateType &state);
     Outcomes get_outcome(const StateType &state);
     std::vector<std::uint8_t> legal_moves_mask(const StateType &state);
-    std::vector<float> decode_policy(const StateType &state, std::vector<float> policy);
+    std::vector<float> decode_policy(const StateType &state,
+                                     std::vector<float> policy);
 };
 
 static_assert(Game<TicTacToe>);

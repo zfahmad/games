@@ -1,13 +1,16 @@
 #include <cstdint>
 #include <games/chinese_checkers/chinese_checkers.hpp>
 #include <games/chinese_checkers/chinese_checkers_state.hpp>
+#include <games/chinese_checkers/chinese_checkers_generator.hpp>
 #include <iostream>
 
 int main(int argc, char **argv) {
     std::cout << "Testing chinese_checkers...\n";
     int dim = 4;
     int num_pieces = 3;
+    Generator generator;
     ChineseCheckersState state = ChineseCheckersState(dim, dim, num_pieces);
+    ChineseCheckersState new_state;
     ChineseCheckers game = ChineseCheckers(dim, dim, num_pieces);
     // Initial board for 3x3x3
     // ChineseCheckersState::BoardType board =
@@ -16,6 +19,18 @@ int main(int argc, char **argv) {
     // ChineseCheckersState::BoardType board =
     //     ChineseCheckersState::BoardType({132608, 103347650560});
     // state.set_board(board);
+
+    game.reset(state);
+
+    generator.generate_all_states(game, state);
+    // generator.generate_terminal_states(game, state);
+
+    // game.print_mask(game.destinations_mask);
+    // game.print_mask(~game.empties_mask);
+    // std::vector<ChineseCheckers::ActionType> actions =
+    // game.get_actions(state); for (auto action : actions)
+    //     std::cout << action << std::endl;
+    // state = game.get_next_state(state, actions[0]);
     // state.print_board();
 
     // std::uint8_t byte = 0;
@@ -46,22 +61,29 @@ int main(int argc, char **argv) {
     //     (1ULL << 13) + (1ULL << 19) + (1ULL << 26);
     // ChineseCheckersState::BBType p2 =
     //     (1ULL << 33) + (1ULL << 35) + (1ULL << 41);
-    ChineseCheckersState::BBType p1 =
-        (1ULL << 10) + (1ULL << 11) + (1ULL << 27);
-    ChineseCheckersState::BBType p2 =
-        (1ULL << 20) + (1ULL << 36) + (1ULL << 18);
-    state.set_board(ChineseCheckersState::BoardType({p1, p2}));
-    for (int i = 0; i < 3; i++)
-        std::cout << state.piece_locations[0][i] << " ";
-    std::cout << std::endl;
-    for (int i = 0; i < 3; i++)
-        std::cout << state.piece_locations[1][i] << " ";
-    std::cout << std::endl;
+
+    // ChineseCheckersState::BBType p1 =
+    //     (1ULL << 10) + (1ULL << 11) + (1ULL << 27);
+    // ChineseCheckersState::BBType p2 =
+    //     (1ULL << 20) + (1ULL << 36) + (1ULL << 18);
+    // state.set_board(ChineseCheckersState::BoardType({p1, p2}));
+    // for (int i = 0; i < 3; i++)
+    //     std::cout << state.piece_locations[0][i] << " ";
+    // std::cout << std::endl;
+    // for (int i = 0; i < 3; i++)
+    //     std::cout << state.piece_locations[1][i] << " ";
+    // std::cout << std::endl;
+    // // state.print_board();
+    // std::vector<ChineseCheckers::ActionType> actions =
+    // game.get_actions(state);
+    // //
     // state.print_board();
-    // std::vector<ChineseCheckers::ActionType> actions = game.get_actions(state);
-    //
-    // game.apply_action(state, actions[9]);
+    // ChineseCheckers::ActionType a = actions[11];
+    // state = game.get_next_state(state, a);
     // state.print_board();
+    // state = game.get_previous_state(state, a);
+    // state.print_board();
+
     // std::vector<std::vector<uint8_t>> array = state.to_array();
     // for (auto b : array) {
     //     for (int i : b)
@@ -76,22 +98,27 @@ int main(int argc, char **argv) {
     //     std::cout << std::endl;
     // }
 
-    state.print_board();
-    ChineseCheckersState reflected_state = state;
-    ChineseCheckersState::BoardType reflected_board = state.reflect_vertical(state.get_board());
-    reflected_state.set_board(reflected_board);
-    reflected_state.print_board();
-
-    state.print_board();
-    ChineseCheckersState::BBType board_ = (state.get_board()[ChineseCheckersState::Player::One] | state.get_board()[ChineseCheckersState::Player::Two]);
-    // game.print_mask(board_);
-    ChineseCheckersState flipped_state = state;
-    ChineseCheckersState::BoardType flipped_board = state.flip_board(state.get_board());
-    flipped_state.set_board(flipped_board);
-    board_ = (flipped_board[ChineseCheckersState::Player::One] | flipped_board[ChineseCheckersState::Player::Two]);
-    // game.print_mask(board_);
-    flipped_state.print_board();
-    state.canonical_form();
+    // state.print_board();
+    // ChineseCheckersState reflected_state = state;
+    // ChineseCheckersState::BoardType reflected_board =
+    // state.reflect_vertical(state.get_board());
+    // reflected_state.set_board(reflected_board);
+    // reflected_state.print_board();
+    //
+    // state.print_board();
+    // ChineseCheckersState::BBType board_ =
+    // (state.get_board()[ChineseCheckersState::Player::One] |
+    // state.get_board()[ChineseCheckersState::Player::Two]);
+    // // game.print_mask(board_);
+    // ChineseCheckersState flipped_state = state;
+    // ChineseCheckersState::BoardType flipped_board =
+    // state.flip_board(state.get_board());
+    // flipped_state.set_board(flipped_board);
+    // board_ = (flipped_board[ChineseCheckersState::Player::One] |
+    // flipped_board[ChineseCheckersState::Player::Two]);
+    // // game.print_mask(board_);
+    // flipped_state.print_board();
+    // state.canonical_form();
     // std::vector<std::uint8_t> mask = game.legal_moves_mask(state);
     // for (int i : mask)
     //     std::cout << i << " ";

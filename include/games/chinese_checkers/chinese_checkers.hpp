@@ -60,7 +60,7 @@ const ChineseCheckersState::BBType SETUPS[] = {
 
 class ChineseCheckers {
 public:
-    enum class Outcomes { NonTerminal, P1Win, P2Win, Draw };
+    enum class Outcomes : std::int8_t { NonTerminal, P1Win, P2Win, Draw };
     using ActionType = int;
     using StateType = ChineseCheckersState;
 
@@ -70,27 +70,28 @@ public:
     bool has_actions(const StateType &state);
     int apply_action(StateType &state, ActionType action);
     int undo_action(StateType &state, ActionType action);
-    ChineseCheckersState get_next_state(const StateType &state,
-                                        ActionType action);
+    StateType get_next_state(const StateType &state, ActionType action);
+    StateType get_previous_state(const StateType &state, ActionType action);
     void reset(StateType &state);
-    bool is_winner(const StateType &state, StateType::Player player);
+    bool is_winner(const StateType &state, StateType::Player player) const;
     bool is_draw(const StateType &state);
     bool is_terminal(const StateType &state);
+    bool is_legal(const StateType &state);
     Outcomes get_outcome(const StateType &state);
     std::vector<std::uint8_t> legal_moves_mask(const StateType &state);
     std::vector<float> decode_policy(const StateType &state,
-                                            std::vector<float> policy);
+                                     std::vector<float> policy);
     void print_mask(StateType::BBType mask);
     StateType::BBType get_steps(StateType::BoardType board, int source) const;
     StateType::BBType is_hop(StateType::BoardType board,
                              ChineseCheckersState::BBType source_bits,
                              int dir) const;
     StateType::BBType get_hops(StateType::BoardType board, int source) const;
+    StateType::BBType destinations_mask;
+    StateType::BBType empties_mask;
 
 protected:
     StateType::BoardType initial_board;
-    StateType::BBType destinations_mask;
-    StateType::BBType empties_mask;
 
 private:
     int num_rows_, num_cols_, num_pieces_;

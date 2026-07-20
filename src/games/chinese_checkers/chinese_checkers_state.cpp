@@ -235,7 +235,6 @@ BoardType ChineseCheckersState::flip_board(BoardType board) {
     players.push_back(Player::One);
     players.push_back(Player::Two);
 
-    std::cout << this->num_cols_ * this->num_rows_ << std::endl;
     int offset = (6 - this->num_rows_);
     for (Player player : players) {
         temp[player] <<= (offset * 9);
@@ -255,10 +254,23 @@ std::array<BBType, 2> ChineseCheckersState::canonical_form() {
     std::vector<std::array<BBType, 2>> symmetries;
     BoardType board = get_board();
     BoardType transformed_board;
+
+    if (this->player_ == Player::Two)
+        board = flip_board(board);
     symmetries.push_back({board[Player::One], board[Player::Two]});
+
     transformed_board = reflect_vertical(board);
     symmetries.push_back({transformed_board[Player::One], transformed_board[Player::Two]});
 
     std::array<BBType, 2> canonical = *std::min_element(symmetries.begin(), symmetries.end());
     return canonical;
+}
+
+void ChineseCheckersState::from_canonical_form(std::array<BBType, 2> canonical_state) {
+    // The canonical form of Chinese checkers states view states from the
+    // perspective of the first player.
+    // Loading a state from its canonical form also sets the first player as
+    // acting.
+    this->set_board(BoardType(canonical_state));
+    this->set_player(Player::One);
 }

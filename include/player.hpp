@@ -20,6 +20,8 @@ public:
 
     constexpr const std::array<T, 2> &data() const noexcept { return data_; }
 
+    bool operator==(const PlayerIndexed&) const = default;
+
 private:
     static constexpr std::size_t to_index(PlayerEnum p) noexcept {
         return static_cast<std::size_t>(p);

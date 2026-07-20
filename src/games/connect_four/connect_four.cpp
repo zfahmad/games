@@ -70,7 +70,7 @@ int ConnectFour::undo_action(StateType &state, ActionType action) {
 
     while (bit ^ (bit & joint_bb))
         bit = (bit << num_cols);
-    board[state.get_player()] ^= bit;
+    board[state.get_opponent()] ^= bit;
     state.set_board(board);
     return 0;
 }
@@ -84,6 +84,17 @@ ConnectFour::StateType ConnectFour::get_next_state(const StateType &state,
     else
         next_state.set_player(Player::One);
     return next_state;
+}
+
+ConnectFour::StateType ConnectFour::get_previous_state(const StateType &state,
+                                                       ActionType action) {
+    StateType previous_state = state;
+    undo_action(previous_state, action);
+    if (state.get_player() == Player::One)
+        previous_state.set_player(Player::Two);
+    else
+        previous_state.set_player(Player::One);
+    return previous_state;
 }
 
 bool ConnectFour::shift_check(BBType board, int direction) {
@@ -192,6 +203,6 @@ ConnectFour::legal_moves_mask(const StateType &state) {
 }
 
 std::vector<float> ConnectFour::decode_policy(const StateType &state,
-                                        std::vector<float> policy) {
+                                              std::vector<float> policy) {
     return policy;
 }
