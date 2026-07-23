@@ -371,7 +371,7 @@ bool ChineseCheckers::is_winner(const StateType &state, Player player) const {
         // Is goal filled and at least one piece belongs to player?
         // std::cout << joint_board << " " << initial_board[opponent] <<
         // std::endl;
-        if (joint_board == initial_board[opponent])
+        if ((joint_board & initial_board[opponent]) == initial_board[opponent])
             return true;
         else
             return false;
