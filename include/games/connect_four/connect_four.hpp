@@ -14,6 +14,7 @@ public:
     ConnectFour();
     std::string get_id() { return "connect_four"; }
     std::vector<ActionType> get_actions(const StateType &state) const;
+    std::vector<ActionType> get_reverse_actions(const StateType &state) const;
     int apply_action(StateType &state, ActionType action);
     int undo_action(StateType &state, ActionType action);
     StateType get_next_state(const StateType &state, ActionType action);

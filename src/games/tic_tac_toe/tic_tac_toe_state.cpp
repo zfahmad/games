@@ -60,6 +60,10 @@ void TicTacToeState::from_compact(std::vector<BBType> compact_board) {
 }
 
 std::vector<std::vector<std::uint8_t>> TicTacToeState::to_array() {
+    // Returns an array representation of the state's bitboards.
+    // 2-dimensional array where the first row represents the board for the
+    // player to move.
+
     std::vector<std::vector<uint8_t>> arrs;
     arrs.reserve(2);
     std::vector<Player> players;

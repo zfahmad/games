@@ -34,9 +34,9 @@ class DepthFirstSearch:
     def traverse(self, game: GameProtocol, node: Node) -> float:
         if game.is_terminal(node.state):
             node.V = get_utility(game, node.state)
-            # self.cache[node.state.to_string()] = StateLabel(
-            #     value=node.V, policy=np.zeros(4)
-            # )
+            self.cache[node.state.to_string()] = StateLabel(
+                value=node.V, policy=np.zeros(9)
+            )
             return -node.V
 
         label = self.cache.get(node.state.to_string(), None)
@@ -69,6 +69,7 @@ class DepthFirstSearch:
 
 if __name__ == "__main__":
     import python.wrappers.tic_tac_toe_wrapper as G
+
     # import python.wrappers.connect_four_wrapper as G
 
     # import python.wrappers.connect_four_wrapper as G
@@ -103,18 +104,20 @@ if __name__ == "__main__":
         masks.append(game.legal_moves_mask(state))
         values.append(dfs.cache[key].value)
         policies.append(dfs.cache[key].policy)
-        valid = np.sum(np.array(game.legal_moves_mask(state)) * np.array(dfs.cache[key].policy))
+        valid = np.sum(
+            np.array(game.legal_moves_mask(state)) * np.array(dfs.cache[key].policy)
+        )
         if not valid:
             state.print_board()
             print(game.legal_moves_mask(state))
             print(dfs.cache[key].policy)
 
     states = np.array(states)
-    values = np.array(values).reshape((-1,1))
+    values = np.array(values).reshape((-1, 1))
     masks = np.array(masks)
     policies = np.array(policies)
     # print(masks.shape)
-    # print(values.shape)
+    print(values.shape)
     # print(policies.shape)
 
     # print(np.reshape(np.sum(states[-15:], axis=1), (-1, 3, 3)))

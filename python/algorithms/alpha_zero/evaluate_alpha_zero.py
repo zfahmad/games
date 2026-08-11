@@ -44,7 +44,7 @@ from python.play import Play
 from python.players.player_protocols import PlayerProtocol
 from python.players.puct_inference_server import InferenceClient
 from python.players.puct_player import PUCTPlayer
-from python.plot_alpha_zero import plot_results
+from python.algorithms.alpha_zero.plot_alpha_zero import plot_results
 
 
 @dataclass

@@ -286,6 +286,54 @@ ChineseCheckers::get_actions(const StateType &state) const {
     return actions;
 }
 
+std::vector<ChineseCheckers::ActionType>
+ChineseCheckers::get_reverse_actions(const StateType &state) const {
+    std::vector<ChineseCheckers::ActionType> actions;
+    // StateType state_ = state;
+    // state_.set_player(state.get_opponent());
+    // actions = get_actions(state_);
+    BBType bit = 0ULL;
+    std::vector<int> sources;
+    int inverter = std::pow(state.get_num_cols(), 4) - 1;
+    if (state.get_opponent() == Player::One)
+        sources = state.piece_locations[0];
+    else
+        sources = state.piece_locations[1];
+
+    for (int s : sources) {
+        BBType steps, hops;
+        steps = get_steps(state.get_board(), s);
+        hops = get_hops(state.get_board(), s);
+        int base = location_to_index(s, num_rows_);
+
+        // Collate all step actions
+        bit = 1ULL;
+        for (int i = 0; i < sizeof(BBType) * 8; i++) {
+            if (bit & steps) {
+                int offset = location_to_index(i, num_rows_);
+                ChineseCheckers::ActionType action =
+                    (offset * num_rows_ * num_rows_) + base;
+                actions.push_back(action);
+            }
+            bit <<= 1;
+        }
+
+        // Collate all step actions
+        bit = 1ULL;
+        for (int i = 0; i < sizeof(BBType) * 8; i++) {
+            if (bit & hops) {
+                int offset = location_to_index(i, num_rows_);
+                ChineseCheckers::ActionType action =
+                    (offset * num_rows_ * num_rows_) + base;
+                actions.push_back(action);
+            }
+            bit <<= 1;
+        }
+    }
+
+    return actions;
+}
+
 bool ChineseCheckers::has_actions(const StateType &state) {
     return get_actions(state).size() > 0;
 }

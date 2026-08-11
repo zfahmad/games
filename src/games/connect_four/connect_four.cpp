@@ -1,5 +1,6 @@
 #include <bitset>
 #include <cassert>
+#include <constants.hpp>
 #include <games/connect_four/connect_four.hpp>
 #include <games/connect_four/connect_four_state.hpp>
 #include <iomanip>
@@ -25,7 +26,7 @@ ConnectFour::get_actions(const StateType &state) const {
     // piece.
     std::vector<ActionType> actions;
     int num_cols = state.get_num_cols();
-    BBType bit = (1L << (num_cols + 1));
+    BBType bit = (1ULL << (num_cols + 1));
     BBType joint_bb =
         state.get_board()[Player::One] | state.get_board()[Player::Two];
 
@@ -37,13 +38,72 @@ ConnectFour::get_actions(const StateType &state) const {
     return actions;
 }
 
+void print_bb(BBType bb, int num_rows, int num_cols) {
+    BBType bit = (1 << (num_cols + 1));
+    std::cout << " ";
+    for (int i = 0; i < num_cols; i++) {
+        std::cout << GRAY << i << " ";
+    }
+    std::cout << RESET << "\n";
+    for (int row = 0; row < num_rows; row++) {
+        std::cout << " ";
+        for (int col = 0; col < num_cols; col++) {
+            if (bb & bit)
+                std::cout << GREEN << CROSS << " " << RESET;
+            else
+                std::cout << GRAY << DOT << " " << RESET;
+            bit = (bit << 1);
+        }
+        std::cout << "\n";
+        bit = (bit << 1);
+    }
+    std::cout << std::endl;
+}
+
+std::vector<ConnectFour::ActionType>
+ConnectFour::get_reverse_actions(const StateType &state) const {
+    std::vector<ActionType> actions;
+    BBType bit = 0ULL;
+
+    ConnectFourState::BoardType board = state.get_board();
+    BBType joint_board = board[Player::One] | board[Player::Two];
+
+    // std::cout << joint_board << std::endl;
+    Player opponent = state.get_opponent();
+    BBType p_board = state.get_board()[state.get_player()];
+    // print_bb(p_board, state.get_num_rows(), state.get_num_cols());
+
+    for (int i = 0; i < state.get_num_rows(); i++) {
+        // joint_board ^= (board[state.get_player()] << ((state.get_num_cols() *
+        // i) + 1));
+        p_board |= p_board << ((state.get_num_cols() + 1) * i);
+    }
+    // print_bb(p_board, state.get_num_rows(), state.get_num_cols());
+    // joint_board ^= board[state.get_player()];
+    joint_board ^= p_board;
+
+    // print_bb(joint_board, state.get_num_rows(), state.get_num_cols());
+    // std::cout << bit << std::endl;
+    for (int i = 0; i < state.get_num_rows(); i++) {
+        bit |= (joint_board >> ((state.get_num_cols() + 1) * i));
+    }
+    bit = bit >> (state.get_num_cols() + 1);
+
+    // std::cout << bit << std::endl;
+    for (int i = 0; i < state.get_num_cols(); i++)
+        if (1ULL & (bit >> i))
+            actions.push_back(i);
+
+    return actions;
+}
+
 // TODO: Add checks for both apply_action and undo_action to ensure actions are
 // valid.
 int ConnectFour::apply_action(StateType &state, ActionType action) {
     // Adds a new piece to the column denoted by action
 
     // Move piece to column
-    BBType bit = 1L << action;
+    BBType bit = 1ULL << action;
     int num_rows = state.get_num_rows();
     int num_cols = state.get_num_cols() + 1;
     // Move piece to bottom of column
@@ -62,7 +122,7 @@ int ConnectFour::apply_action(StateType &state, ActionType action) {
 
 int ConnectFour::undo_action(StateType &state, ActionType action) {
     // Removes the top piece located in the column denoted by action
-    BBType bit = 1L << action;
+    BBType bit = 1ULL << action;
     int num_rows = state.get_num_rows();
     int num_cols = state.get_num_cols() + 1;
     StateType::BoardType board = state.get_board();

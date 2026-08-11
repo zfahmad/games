@@ -67,6 +67,7 @@ public:
     ChineseCheckers(int num_rows = 6, int num_cols = 6, int num_pieces = 6);
     std::string get_id() { return "chinese_checkers"; }
     std::vector<ActionType> get_actions(const StateType &state) const;
+    std::vector<ActionType> get_reverse_actions(const StateType &state) const;
     bool has_actions(const StateType &state);
     int apply_action(StateType &state, ActionType action);
     int undo_action(StateType &state, ActionType action);
@@ -89,9 +90,9 @@ public:
     StateType::BBType get_hops(StateType::BoardType board, int source) const;
     StateType::BBType destinations_mask;
     StateType::BBType empties_mask;
+    StateType::BoardType initial_board;
 
 protected:
-    StateType::BoardType initial_board;
 
 private:
     int num_rows_, num_cols_, num_pieces_;

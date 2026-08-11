@@ -259,8 +259,8 @@ std::array<BBType, 2> ChineseCheckersState::canonical_form() {
         board = flip_board(board);
     symmetries.push_back({board[Player::One], board[Player::Two]});
 
-    transformed_board = reflect_vertical(board);
-    symmetries.push_back({transformed_board[Player::One], transformed_board[Player::Two]});
+    // transformed_board = reflect_vertical(board);
+    // symmetries.push_back({transformed_board[Player::One], transformed_board[Player::Two]});
 
     std::array<BBType, 2> canonical = *std::min_element(symmetries.begin(), symmetries.end());
     return canonical;
