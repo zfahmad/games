@@ -39,6 +39,8 @@ public:
     BoardType flip_board(BoardType board);
     // void flip_state();
 
+    bool operator==(const ChineseCheckersState&) const = default;
+
 protected:
     BoardType board_ = BoardType();
     Player player_ = Player::One;

@@ -190,6 +190,10 @@ void ChineseCheckersState::from_string(std::string state_str) {
     locations.push_back(get_player_locations(board_[Player::One]));
     locations.push_back(get_player_locations(board_[Player::Two]));
     this->piece_locations = locations;
+    if (state_str[32] == '0')
+        set_player(Player::One);
+    else
+        set_player(Player::Two);
 }
 
 int ChineseCheckersState::num_pieces(BBType board) const {
@@ -260,13 +264,16 @@ std::array<BBType, 2> ChineseCheckersState::canonical_form() {
     symmetries.push_back({board[Player::One], board[Player::Two]});
 
     // transformed_board = reflect_vertical(board);
-    // symmetries.push_back({transformed_board[Player::One], transformed_board[Player::Two]});
+    // symmetries.push_back({transformed_board[Player::One],
+    // transformed_board[Player::Two]});
 
-    std::array<BBType, 2> canonical = *std::min_element(symmetries.begin(), symmetries.end());
+    std::array<BBType, 2> canonical =
+        *std::min_element(symmetries.begin(), symmetries.end());
     return canonical;
 }
 
-void ChineseCheckersState::from_canonical_form(std::array<BBType, 2> canonical_state) {
+void ChineseCheckersState::from_canonical_form(
+    std::array<BBType, 2> canonical_state) {
     // The canonical form of Chinese checkers states view states from the
     // perspective of the first player.
     // Loading a state from its canonical form also sets the first player as
